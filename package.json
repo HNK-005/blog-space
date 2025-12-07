@@ -1,0 +1,20 @@
+{
+  "name": "blog-space",
+  "version": "0.0.0",
+  "description": "<div align=\"center\">",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github-work:HNK-005/blog-space.git"
+  },
+  "keywords": [],
+  "author": "",
+  "devDependencies": {
+    "@commitlint/cli": "^20.2.0",
+    "@commitlint/config-conventional": "^20.2.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7"
+  }
+}
