@@ -3,7 +3,15 @@
   "version": "0.0.0",
   "description": "<div align=\"center\">",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "frontend/**/*.{ts,tsx}": [
+      "bash -c 'cd frontend && npx eslint --fix'"
+    ],
+    "backend/**/*.ts": [
+      "bash -c 'cd backend && npx eslint --fix'"
+    ]
   },
   "repository": {
     "type": "git",
