@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "description": "<div align=\"center\">",
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:fe": "cd frontend && npm test",
+    "test:be": "cd backend && npm test",
+    "test:all": "npm run test:fe && npm run test:be"
   },
   "lint-staged": {
     "frontend/**/*.{ts,tsx}": [
