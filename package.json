@@ -10,10 +10,10 @@
   },
   "lint-staged": {
     "frontend/**/*.{ts,tsx}": [
-      "bash -c 'cd frontend && npx eslint --fix'"
+      "bash -c 'cd frontend && npx eslint --fix && npx prettier --write .'"
     ],
     "backend/**/*.ts": [
-      "bash -c 'cd backend && npx eslint --fix'"
+      "bash -c 'cd backend && npx eslint --fix && npx prettier --write .'"
     ]
   },
   "repository": {
