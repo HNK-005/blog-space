@@ -9,10 +9,10 @@
     "test:all": "npm run test:fe && npm run test:be"
   },
   "lint-staged": {
-    "frontend/**/*.{ts,tsx}": [
+    "frontend/**/*": [
       "bash -c 'cd frontend && npx eslint --fix && npx prettier --write .'"
     ],
-    "backend/**/*.ts": [
+    "backend/**/*": [
       "bash -c 'cd backend && npx eslint --fix && npx prettier --write .'"
     ]
   },
