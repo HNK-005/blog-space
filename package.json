@@ -7,17 +7,9 @@
     "test:fe": "cd frontend && npm test",
     "test:be": "cd backend && npm test",
     "test:all": "npm run test:fe && npm run test:be",
-    "format:fe": "cd frontend && npx prettier --write .",
-    "format:be": "cd backend && npx prettier --write .",
+    "format:fe": "cd frontend && npx eslint --fix &&  npx prettier --write .",
+    "format:be": "cd backend && npx eslint --fix &&  npx prettier --write .",
     "format:all": "npm run format:fe && npm run format:be"
-  },
-  "lint-staged": {
-    "frontend/**/*.{ts,tsx}": [
-      "bash -c 'cd frontend && npx eslint --fix'"
-    ],
-    "backend/**/*.ts": [
-      "bash -c 'cd backend && npx eslint --fix'"
-    ]
   },
   "repository": {
     "type": "git",
@@ -28,7 +20,6 @@
   "devDependencies": {
     "@commitlint/cli": "^20.2.0",
     "@commitlint/config-conventional": "^20.2.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.2.7"
+    "husky": "^9.1.7"
   }
 }
