@@ -6,14 +6,17 @@
     "prepare": "husky",
     "test:fe": "cd frontend && npm test",
     "test:be": "cd backend && npm test",
-    "test:all": "npm run test:fe && npm run test:be"
+    "test:all": "npm run test:fe && npm run test:be",
+    "format:fe": "cd frontend && npx prettier --write .",
+    "format:be": "cd backend && npx prettier --write .",
+    "format:all": "npm run format:fe && npm run format:be"
   },
   "lint-staged": {
-    "frontend/**/*": [
-      "bash -c 'cd frontend && npx eslint --fix && npx prettier --write .'"
+    "frontend/**/*.{ts,tsx}": [
+      "bash -c 'cd frontend && npx eslint --fix'"
     ],
-    "backend/**/*": [
-      "bash -c 'cd backend && npx eslint --fix && npx prettier --write .'"
+    "backend/**/*.ts": [
+      "bash -c 'cd backend && npx eslint --fix'"
     ]
   },
   "repository": {
