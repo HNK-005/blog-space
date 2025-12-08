@@ -29,6 +29,7 @@
     "@tanstack/react-router": "^1.140.0",
     "@tanstack/react-router-devtools": "^1.140.0",
     "react-hook-form": "^7.68.0",
+    "zod": "^4.1.13",
     "zustand": "^5.0.9"
   }
 }
