@@ -15,6 +15,9 @@ const compat = new FlatCompat({
 });
 
 export default [
+  {
+    ignores: ['dist', 'node_modules'],
+  },
   ...compat.extends(
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
@@ -36,7 +39,6 @@ export default [
         tsconfigRootDir: __dirname,
       },
     },
-    ignores: ['dist', 'node_modules'],
     rules: {
       '@typescript-eslint/interface-name-prefix': 'off',
       '@typescript-eslint/explicit-function-return-type': 'off',
