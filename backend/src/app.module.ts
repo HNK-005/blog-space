@@ -5,6 +5,9 @@ import { PlaygroundModule } from './modules/playground/playground.module';
 import appConfig from './common/configs/app.config';
 import { APP_ENVIRONMENT } from './common/constants/app.enum';
 import { LoggerModule } from 'nestjs-pino';
+import { MongooseModule } from '@nestjs/mongoose';
+import { MongooseConfigService } from './providers/database/mongoose-config.service';
+import databaseConfig from './providers/database/config/database.config';
 
 /* Load PlaygroundModule only in development environment */
 const devModules =
@@ -34,8 +37,11 @@ const devModules =
             : undefined,
       },
     }),
+    MongooseModule.forRootAsync({
+      useClass: MongooseConfigService,
+    }),
     ConfigModule.forRoot({
-      load: [appConfig],
+      load: [appConfig, databaseConfig],
       isGlobal: true,
     }),
     ...devModules,
