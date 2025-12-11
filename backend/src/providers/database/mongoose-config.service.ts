@@ -41,7 +41,9 @@ export class MongooseConfigService implements MongooseOptionsFactory {
 @Injectable()
 export class MongooseConfigTestService implements MongooseOptionsFactory {
   async createMongooseOptions(): Promise<MongooseModuleOptions> {
-    const mongoServer = await MongoMemoryServer.create();
+    const mongoServer = await MongoMemoryServer.create({
+      instance: { port: 27017 },
+    });
 
     return {
       uri: mongoServer.getUri(),
