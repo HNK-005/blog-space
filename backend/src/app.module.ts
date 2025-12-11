@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { ConfigModule } from '@nestjs/config';
-import { PlaygroundModule } from './src/modules/playground/playground.module';
+import { PlaygroundModule } from './modules/playground/playground.module';
 import appConfig from './common/configs/app.config';
 import { APP_ENVIRONMENT } from './common/constants/app.enum';
 import { LoggerModule } from 'nestjs-pino';
