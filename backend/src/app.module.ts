@@ -11,6 +11,8 @@ import {
   MongooseConfigTestService,
 } from './providers/database/mongoose-config.service';
 import databaseConfig from './providers/database/config/database.config';
+import fileConfig from './modules/file/config/file.config';
+import { FileModule } from './modules/file/file.module';
 
 /* Load PlaygroundModule only in development environment */
 const devModules =
@@ -47,10 +49,11 @@ const devModules =
           : MongooseConfigService,
     }),
     ConfigModule.forRoot({
-      load: [appConfig, databaseConfig],
+      load: [appConfig, databaseConfig, fileConfig],
       isGlobal: true,
     }),
     ...devModules,
+    FileModule,
   ],
 })
 export class AppModule {}
