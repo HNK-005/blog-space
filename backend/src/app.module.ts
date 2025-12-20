@@ -1,3 +1,4 @@
+import { UserModule } from './modules/user/user.module';
 import { Module } from '@nestjs/common';
 
 import { ConfigModule } from '@nestjs/config';
@@ -54,6 +55,7 @@ const devModules =
     }),
     ...devModules,
     FileModule,
+    UserModule,
   ],
 })
 export class AppModule {}
