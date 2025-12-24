@@ -3,7 +3,7 @@ import { Follow } from '../domain/follow';
 import { FollowSchemaClass } from '../entities/follow.schema';
 
 export class FollowMapper {
-  toDomain(raw: FollowSchemaClass): Follow {
+  static toDomain(raw: FollowSchemaClass): Follow {
     const domain = new Follow();
     domain.id = raw._id;
     domain.followerId = UserMapper.toDomain(raw.follower);
@@ -13,7 +13,7 @@ export class FollowMapper {
     domain.deletedAt = raw.deletedAt;
     return domain;
   }
-  toPersitence(domain: Follow): FollowSchemaClass {
+  static toPersistence(domain: Follow): FollowSchemaClass {
     const raw = new FollowSchemaClass();
     raw._id = domain.id;
     raw.follower = UserMapper.toPersistence(domain.followerId);

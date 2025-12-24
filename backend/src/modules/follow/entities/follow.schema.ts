@@ -1,7 +1,7 @@
 import EntityDocumentHelper from '@/common/utils/document-entity';
 import { UserSchemaClass } from '@/modules/user/entities/user.chema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 
 @Schema({
   collection: 'follows',
@@ -13,14 +13,14 @@ import mongoose, { HydratedDocument } from 'mongoose';
 })
 export class FollowSchemaClass extends EntityDocumentHelper {
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
+    type: UserSchemaClass,
     ref: UserSchemaClass.name,
     required: true,
   })
   follower: UserSchemaClass;
 
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
+    type: UserSchemaClass,
     ref: UserSchemaClass.name,
     required: true,
   })
