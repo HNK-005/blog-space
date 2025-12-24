@@ -14,6 +14,8 @@ import {
 import databaseConfig from './providers/database/config/database.config';
 import fileConfig from './modules/file/config/file.config';
 import { FileModule } from './modules/file/file.module';
+import { PostModule } from './modules/post/post.module';
+import { TagModule } from './modules/tag/tag.module';
 
 /* Load PlaygroundModule only in development environment */
 const devModules =
@@ -56,6 +58,8 @@ const devModules =
     ...devModules,
     FileModule,
     UserModule,
+    PostModule,
+    TagModule,
   ],
 })
 export class AppModule {}
