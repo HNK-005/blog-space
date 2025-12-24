@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose from 'mongoose';
+import { Types, HydratedDocument } from 'mongoose';
 import { UserSchemaClass } from '@/modules/user/entities/user.chema';
 import { FileSchemaClass } from '@/modules/file/entities/file.schema';
 import EntityDocumentHelper from '@/common/utils/document-entity';
@@ -30,7 +30,7 @@ export class PostSchemaClass extends EntityDocumentHelper {
   banner: FileSchemaClass | null;
 
   @Prop({
-    type: [mongoose.Schema.Types.ObjectId],
+    type: [Types.ObjectId],
     ref: TagSchemaClass.name,
     maximum: 10,
   })
@@ -43,7 +43,7 @@ export class PostSchemaClass extends EntityDocumentHelper {
   draft?: boolean;
 
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
+    type: Types.ObjectId,
     ref: UserSchemaClass.name,
     required: true,
   })
@@ -67,7 +67,7 @@ export class PostSchemaClass extends EntityDocumentHelper {
 
 export const PostSchema = SchemaFactory.createForClass(PostSchemaClass);
 
-export type PostDocument = mongoose.HydratedDocument<PostSchemaClass>;
+export type PostDocument = HydratedDocument<PostSchemaClass>;
 
 PostSchema.plugin(paginate);
 
