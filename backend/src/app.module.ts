@@ -16,6 +16,7 @@ import fileConfig from './modules/file/config/file.config';
 import { FileModule } from './modules/file/file.module';
 import { PostModule } from './modules/post/post.module';
 import { TagModule } from './modules/tag/tag.module';
+import { FollowModule } from './modules/follow/follow.module';
 
 /* Load PlaygroundModule only in development environment */
 const devModules =
@@ -60,6 +61,7 @@ const devModules =
     UserModule,
     PostModule,
     TagModule,
+    FollowModule,
   ],
 })
 export class AppModule {}
