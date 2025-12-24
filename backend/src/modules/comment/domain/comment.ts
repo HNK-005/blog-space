@@ -1,6 +1,7 @@
 import { Post } from '@/modules/post/domain/post';
 import { User } from '@/modules/user/domain/user';
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 
 export class Comments {
   @ApiProperty({ type: String })
@@ -22,8 +23,10 @@ export class Comments {
   createdAt: Date;
 
   @ApiProperty({ type: Date })
+  @Exclude({ toPlainOnly: true })
   updatedAt: Date;
 
   @ApiProperty({ type: Date, required: false })
+  @Exclude({ toPlainOnly: true })
   deletedAt?: Date;
 }
