@@ -2,20 +2,21 @@ import { registerAs } from '@nestjs/config';
 
 import { IsEnum } from 'class-validator';
 import validateConfig from '@/common/utils/validate-config';
-import { FileConfig } from './file-config.type';
-import { FileDriver } from '../file.enum';
+import { UploadConfig } from './upload-config.type';
+import { UploadDriver } from '../upload.enum';
 
 class EnvironmentVariablesValidator {
-  @IsEnum(FileDriver)
-  FILE_DRIVER: FileDriver;
+  @IsEnum(UploadDriver)
+  FILE_DRIVER: UploadDriver;
 }
 
-export default registerAs<FileConfig>('file', () => {
+export default registerAs<UploadConfig>('upload', () => {
   validateConfig(process.env, EnvironmentVariablesValidator);
 
   return {
     driver:
-      (process.env.FILE_DRIVER as FileDriver | undefined) ?? FileDriver.LOCAL,
+      (process.env.FILE_DRIVER as UploadDriver | undefined) ??
+      UploadDriver.LOCAL,
     maxFileSize: 5242880, // 5mb
   };
 });

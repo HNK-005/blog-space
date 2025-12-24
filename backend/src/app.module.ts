@@ -3,7 +3,6 @@ import { Module } from '@nestjs/common';
 
 import { ConfigModule } from '@nestjs/config';
 import { PlaygroundModule } from './modules/playground/playground.module';
-import appConfig from './common/configs/app.config';
 import { APP_ENVIRONMENT } from './common/constants/app.enum';
 import { LoggerModule } from 'nestjs-pino';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -11,12 +10,16 @@ import {
   MongooseConfigService,
   MongooseConfigTestService,
 } from './providers/database/mongoose-config.service';
+
+import appConfig from './common/configs/app.config';
 import databaseConfig from './providers/database/config/database.config';
-import fileConfig from './modules/file/config/file.config';
+import uploadConfig from './providers/upload/config/upload.config';
+
 import { FileModule } from './modules/file/file.module';
 import { PostModule } from './modules/post/post.module';
 import { TagModule } from './modules/tag/tag.module';
 import { FollowModule } from './modules/follow/follow.module';
+import { MailModule } from './providers/mail/mail.module';
 
 /* Load PlaygroundModule only in development environment */
 const devModules =
@@ -53,7 +56,7 @@ const devModules =
           : MongooseConfigService,
     }),
     ConfigModule.forRoot({
-      load: [appConfig, databaseConfig, fileConfig],
+      load: [appConfig, databaseConfig, uploadConfig],
       isGlobal: true,
     }),
     ...devModules,
@@ -62,6 +65,7 @@ const devModules =
     PostModule,
     TagModule,
     FollowModule,
+    MailModule,
   ],
 })
 export class AppModule {}
