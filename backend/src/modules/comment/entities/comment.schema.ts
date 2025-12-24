@@ -2,7 +2,7 @@ import EntityDocumentHelper from '@/common/utils/document-entity';
 import { PostSchemaClass } from '@/modules/post/entities/post.schema';
 import { UserSchemaClass } from '@/modules/user/entities/user.chema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 @Schema({
   collection: 'comments',
@@ -17,20 +17,20 @@ export class CommentSchemaClass extends EntityDocumentHelper {
   content: string;
 
   @Prop({
-    type: UserSchemaClass,
+    type: Types.ObjectId,
     ref: UserSchemaClass.name,
     required: true,
   })
   user: UserSchemaClass;
 
   @Prop({
-    type: PostSchemaClass,
+    type: Types.ObjectId,
     ref: PostSchemaClass.name,
     required: true,
   })
   post: PostSchemaClass;
 
-  @Prop({ type: CommentSchemaClass, ref: CommentSchemaClass.name })
+  @Prop({ type: Types.ObjectId, ref: CommentSchemaClass.name })
   parent?: CommentSchemaClass;
 
   @Prop({ type: Date })
