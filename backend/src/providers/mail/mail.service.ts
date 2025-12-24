@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import fs from 'node:fs/promises';
-import hbs from 'nodemailer-express-handlebars';
 import path from 'path';
 import nodemailer from 'nodemailer';
 import handlebars from 'handlebars';
@@ -30,18 +29,6 @@ export class MailService {
         pass: configService.get('mail.password', { infer: true }),
       },
     });
-
-    this.transporter.use(
-      'compile',
-      hbs({
-        viewEngine: {
-          extname: '.hbs',
-          defaultLayout: false,
-        },
-        viewPath: path.resolve('src/modules/mail/mail-templates'),
-        extName: '.hbs',
-      }),
-    );
   }
 
   async sendMail({
@@ -56,11 +43,8 @@ export class MailService {
 
     if (templatePath) {
       const absolutePath = templatePath.endsWith('.hbs')
-        ? path.resolve('src/modules/mail/mail-templates', templatePath)
-        : path.resolve(
-            'src/modules/mail/mail-templates',
-            `${templatePath}.hbs`,
-          );
+        ? path.resolve(templatePath)
+        : path.resolve(`${templatePath}.hbs`);
 
       const template = await fs.readFile(absolutePath, 'utf-8');
       html = handlebars.compile(template, { strict: true })(context);
