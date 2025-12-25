@@ -1,9 +1,16 @@
-import { Module, UnprocessableEntityException } from '@nestjs/common';
+import {
+  forwardRef,
+  Module,
+  UnprocessableEntityException,
+} from '@nestjs/common';
+import { FileLocalController } from './file.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { diskStorage } from 'multer';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import { AllConfigType } from '@/common/configs/config.type';
+import { FileModule } from '../../file.module';
+import { FileLocalService } from './file.service';
 
 @Module({
   imports: [
@@ -39,11 +46,14 @@ import { AllConfigType } from '@/common/configs/config.type';
             },
           }),
           limits: {
-            fileSize: configService.get('upload.maxFileSize', { infer: true }),
+            fileSize: configService.get('file.maxFileSize', { infer: true }),
           },
         };
       },
     }),
+    forwardRef(() => FileModule),
   ],
+  controllers: [FileLocalController],
+  providers: [FileLocalService],
 })
-export class UploadLocalModule {}
+export class FileLocalModule {}

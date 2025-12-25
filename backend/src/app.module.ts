@@ -13,14 +13,14 @@ import {
 
 import appConfig from './common/configs/app.config';
 import databaseConfig from './providers/database/config/database.config';
-import uploadConfig from './providers/upload/config/upload.config';
+import fileConfig from './modules/file/config/file.config';
+import mailConfig from './providers/mail/config/mail.config';
 
 import { FileModule } from './modules/file/file.module';
 import { PostModule } from './modules/post/post.module';
 import { TagModule } from './modules/tag/tag.module';
 import { FollowModule } from './modules/follow/follow.module';
 import { MailerModule } from './modules/mailer/mailer.module';
-import mailConfig from './providers/mail/config/mail.config';
 
 /* Load PlaygroundModule only in development environment */
 const devModules =
@@ -57,7 +57,7 @@ const devModules =
           : MongooseConfigService,
     }),
     ConfigModule.forRoot({
-      load: [appConfig, databaseConfig, uploadConfig, mailConfig],
+      load: [appConfig, databaseConfig, fileConfig, mailConfig],
       isGlobal: true,
     }),
     ...devModules,

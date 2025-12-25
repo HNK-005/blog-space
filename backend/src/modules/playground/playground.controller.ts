@@ -11,7 +11,7 @@ import {
 import { PlaygroundService } from './playground.service';
 import { ApiOperation } from '@nestjs/swagger';
 import { GetDto } from './dto/get.dto';
-import { ApiCustomResponse } from '@/common/dto/api-response.decorator';
+import { ApiOkCustomResponse } from '@/common/dto/api-response.decorator';
 import { PostDto } from './dto/post.dto';
 import { MailerService } from '../mailer/mailer.service';
 
@@ -24,14 +24,14 @@ export class PlaygroundController {
 
   @Get('success-object')
   @ApiOperation({ summary: 'Test format response Object' })
-  @ApiCustomResponse(GetDto, { isArray: false })
+  @ApiOkCustomResponse(GetDto, false)
   testObject() {
     return this.playgroundService.getTestObject();
   }
 
   @Get('success-array')
   @ApiOperation({ summary: 'Test format response Array' })
-  @ApiCustomResponse(GetDto, { isArray: true })
+  @ApiOkCustomResponse(GetDto, true)
   testArray() {
     return this.playgroundService.getTestArray();
   }

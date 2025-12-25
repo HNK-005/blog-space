@@ -7,8 +7,7 @@ import { FileService } from './file.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FileSchema, FileSchemaClass } from './entities/file.schema';
 import { FileRepository } from './file.repository';
-import { FileLocalModule } from './uploader/local/file-local.module';
-
+import { FileLocalModule } from './uploader/local/file.module';
 @Module({
   imports: [
     // import modules, etc.
@@ -18,6 +17,6 @@ import { FileLocalModule } from './uploader/local/file-local.module';
     FileLocalModule,
   ],
   providers: [FileService, FileRepository],
-  exports: [FileService, FileRepository],
+  exports: [FileService],
 })
 export class FileModule {}
