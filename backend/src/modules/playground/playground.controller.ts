@@ -13,10 +13,14 @@ import { ApiOperation } from '@nestjs/swagger';
 import { GetDto } from './dto/get.dto';
 import { ApiCustomResponse } from '@/common/dto/api-response.decorator';
 import { PostDto } from './dto/post.dto';
+import { MailerService } from '../mailer/mailer.service';
 
 @Controller('playground')
 export class PlaygroundController {
-  constructor(private readonly playgroundService: PlaygroundService) {}
+  constructor(
+    private readonly playgroundService: PlaygroundService,
+    private readonly mailerService: MailerService,
+  ) {}
 
   @Get('success-object')
   @ApiOperation({ summary: 'Test format response Object' })
@@ -60,5 +64,12 @@ export class PlaygroundController {
   testPostFails(@Body() body: PostDto) {
     console.log(body);
     return;
+  }
+
+  @Post('test-mailer')
+  @ApiOperation({ summary: 'Test mailer service' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async testMailer() {
+    return this.mailerService.sendTestEmail();
   }
 }
