@@ -12,13 +12,11 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
-  ApiExcludeEndpoint,
-  ApiExtraModels,
+  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import { FileLocalService } from './file.service';
 import { FileResponseDto } from './dto/file-response.dto';
-import { ResponseDto } from '@/common/dto/response.dto';
 import { ApiCreatedCustomResponse } from '@/common/dto/api-response.decorator';
 
 @ApiTags('Files')
@@ -29,7 +27,6 @@ import { ApiCreatedCustomResponse } from '@/common/dto/api-response.decorator';
 export class FileLocalController {
   constructor(private readonly filesService: FileLocalService) {}
 
-  @ApiExtraModels(ResponseDto, FileResponseDto)
   @ApiCreatedCustomResponse(FileResponseDto)
   @ApiBearerAuth()
   @Post('upload')
@@ -53,7 +50,7 @@ export class FileLocalController {
   }
 
   @Get(':path')
-  @ApiExcludeEndpoint()
+  @ApiParam({ name: 'path', type: 'string', description: 'File path' })
   download(@Param('path') path, @Response() response) {
     return response.sendFile(path, { root: './files' });
   }
