@@ -11,6 +11,7 @@ export class FileRepository {
     @InjectModel(FileSchemaClass.name)
     private readonly fileModel: Model<FileSchemaClass>,
   ) {}
+
   async create(data: Omit<FileType, 'id'>): Promise<FileType> {
     const createdFile = new this.fileModel(data);
     const fileObject = await createdFile.save();

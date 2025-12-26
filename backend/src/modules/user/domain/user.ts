@@ -99,15 +99,9 @@ export class User {
   })
   createdAt: Date;
 
-  @ApiProperty({
-    type: Date,
-  })
   @Exclude({ toPlainOnly: true })
   updatedAt: Date;
 
-  @ApiProperty({
-    type: Date,
-  })
   @Exclude({ toPlainOnly: true })
   deletedAt?: Date;
 }

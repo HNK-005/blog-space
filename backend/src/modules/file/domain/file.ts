@@ -26,20 +26,11 @@ export class FileType {
   status: FileStatusEnum;
 
   @Exclude({ toPlainOnly: true })
-  @ApiProperty({
-    type: Date,
-  })
   createdAt: Date;
 
   @Exclude({ toPlainOnly: true })
-  @ApiProperty({
-    type: Date,
-  })
   updatedAt: Date;
 
   @Exclude({ toPlainOnly: true })
-  @ApiProperty({
-    type: Date,
-  })
   deletedAt?: Date;
 }
