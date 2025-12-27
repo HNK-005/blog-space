@@ -50,6 +50,12 @@ export class PostSchemaClass extends EntityDocumentHelper {
   author: UserSchemaClass;
 
   @Prop({
+    type: Types.ObjectId,
+    ref: UserSchemaClass.name,
+  })
+  likes?: UserSchemaClass[];
+
+  @Prop({
     type: Number,
     default: 0,
   })
@@ -72,3 +78,6 @@ export type PostDocument = HydratedDocument<PostSchemaClass>;
 PostSchema.plugin(paginate);
 
 PostSchema.index({ author: 1 });
+PostSchema.index({ slug: 1 });
+PostSchema.index({ tags: 1 });
+PostSchema.index({ likes: 1 });
