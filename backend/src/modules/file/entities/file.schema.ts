@@ -19,6 +19,7 @@ export class FileSchemaClass extends EntityDocumentHelper {
   path: string;
 
   @Prop({
+    type: String,
     enum: FileStatusEnum,
     default: FileStatusEnum.UPLOADED,
   })

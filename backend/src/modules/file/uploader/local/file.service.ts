@@ -1,9 +1,4 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from '@/common/configs/config.type';
 import { FileType } from '@/modules/file/domain/file';
@@ -13,7 +8,6 @@ import { FileService } from '../../file.service';
 export class FileLocalService {
   constructor(
     private readonly configService: ConfigService<AllConfigType>,
-    @Inject(forwardRef(() => FileService))
     private readonly fileService: FileService,
   ) {}
 
