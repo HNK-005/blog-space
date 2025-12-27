@@ -54,6 +54,7 @@ export class UserSchemaClass extends EntityDocumentHelper {
   avatar?: FileSchemaClass | null;
 
   @Prop({
+    type: String,
     enum: AuthProvidersEnum,
     default: AuthProvidersEnum.EMAIL,
     required: true,
@@ -61,13 +62,19 @@ export class UserSchemaClass extends EntityDocumentHelper {
   provider: AuthProvidersEnum;
 
   @Prop({
+    type: String,
     enum: RoleEnum,
     default: RoleEnum.USER,
     required: true,
   })
   role: RoleEnum;
 
-  @Prop({ enum: StatusEnum, default: StatusEnum.INACTIVE, required: true })
+  @Prop({
+    type: String,
+    enum: StatusEnum,
+    default: StatusEnum.INACTIVE,
+    required: true,
+  })
   status: StatusEnum;
 
   @Prop({ type: Date })

@@ -21,6 +21,8 @@ import { PostModule } from './modules/post/post.module';
 import { TagModule } from './modules/tag/tag.module';
 import { FollowModule } from './modules/follow/follow.module';
 import { MailerModule } from './modules/mailer/mailer.module';
+import authConfig from './modules/auth/config/auth.config';
+import { AuthModule } from './modules/auth/auth.module';
 
 /* Load PlaygroundModule only in development environment */
 const devModules =
@@ -57,7 +59,7 @@ const devModules =
           : MongooseConfigService,
     }),
     ConfigModule.forRoot({
-      load: [appConfig, databaseConfig, fileConfig, mailConfig],
+      load: [appConfig, databaseConfig, fileConfig, mailConfig, authConfig],
       isGlobal: true,
     }),
     ...devModules,
@@ -67,6 +69,7 @@ const devModules =
     TagModule,
     FollowModule,
     MailerModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
