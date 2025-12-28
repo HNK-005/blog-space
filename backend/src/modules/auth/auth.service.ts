@@ -13,7 +13,7 @@ export class AuthService {
     private readonly configService: ConfigService<AllConfigType>,
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
-    private readonly mailService: MailerService,
+    private readonly mailerService: MailerService,
   ) {}
 
   async register(dto: AuthRegisterDto): Promise<void> {
@@ -37,7 +37,7 @@ export class AuthService {
       },
     );
 
-    await this.mailService.activationEmail({
+    await this.mailerService.activationEmail({
       to: dto.email,
       data: {
         hash,
