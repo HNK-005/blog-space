@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '../mailer/mailer.service';
@@ -6,6 +10,7 @@ import { AuthRegisterDto } from './dto/auth-register-login.dto';
 import { RoleEnum, StatusEnum } from '../user/user.enum';
 import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from '@/common/configs/config.type';
+import { User } from '../user/domain/user';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +28,44 @@ export class AuthService {
       status: StatusEnum.INACTIVE,
     });
 
+    await this.sendActivationEmail(user.email);
+  }
+
+  async confirmEmail(hash: string): Promise<void> {
+    let userId: User['id'];
+
+    try {
+      const jwtData = await this.jwtService.verifyAsync<{
+        confirmEmailUserId: User['id'];
+      }>(hash, {
+        secret: this.configService.getOrThrow('auth.confirmEmailSecret', {
+          infer: true,
+        }),
+      });
+
+      userId = jwtData.confirmEmailUserId;
+    } catch {
+      throw new UnauthorizedException('Invalid hash');
+    }
+
+    const user = await this.userService.findById(userId);
+
+    if (!user || user?.status !== StatusEnum.INACTIVE) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.status = StatusEnum.ACTIVE;
+
+    await this.userService.update(user.id, user);
+  }
+
+  async sendActivationEmail(email: string): Promise<void> {
+    const user = await this.userService.findByEmail(email);
+
+    if (!user || user?.status !== StatusEnum.INACTIVE) {
+      throw new NotFoundException('User not found');
+    }
+
     const hash = await this.jwtService.signAsync(
       {
         confirmEmailUserId: user.id,
@@ -38,7 +81,7 @@ export class AuthService {
     );
 
     await this.mailerService.activationEmail({
-      to: dto.email,
+      to: email,
       data: {
         hash,
       },

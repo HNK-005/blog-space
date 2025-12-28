@@ -20,6 +20,11 @@ export class UserRepository {
     return UserMapper.toDomain(userObject);
   }
 
+  async findById(id: User['id']): Promise<NullableType<User>> {
+    const userObject = await this.userModel.findById(id);
+    return userObject ? UserMapper.toDomain(userObject) : null;
+  }
+
   async findByEmail(email: User['email']): Promise<NullableType<User>> {
     if (!email) return null;
 
@@ -33,6 +38,29 @@ export class UserRepository {
     if (!username) return null;
 
     const userObject = await this.userModel.findOne({ username });
+    return userObject ? UserMapper.toDomain(userObject) : null;
+  }
+
+  async update(id: User['id'], payload: Partial<User>): Promise<User | null> {
+    const clonedPayload = { ...payload };
+    delete clonedPayload.id;
+
+    const filter = { _id: id };
+    const user = await this.userModel.findOne(filter);
+
+    if (!user) {
+      return null;
+    }
+
+    const userObject = await this.userModel.findOneAndUpdate(
+      filter,
+      UserMapper.toPersistence({
+        ...UserMapper.toDomain(user),
+        ...clonedPayload,
+      }),
+      { new: true },
+    );
+
     return userObject ? UserMapper.toDomain(userObject) : null;
   }
 }

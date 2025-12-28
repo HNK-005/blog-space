@@ -12,6 +12,9 @@ import { RoleEnum, StatusEnum } from './user.enum';
 import { AuthProvidersEnum } from '../auth/auth.enum';
 import { FileStatusEnum } from '../file/file.enum';
 import { FileService } from '../file/file.service';
+import { NullableType } from '@/common/types/nullable.type';
+import { Transaction } from 'nestjs-mongo-transactions';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -83,5 +86,101 @@ export class UserService {
       status: createUserDto.status ?? StatusEnum.INACTIVE,
       provider: createUserDto.provider ?? AuthProvidersEnum.EMAIL,
     } as User);
+  }
+
+  @Transaction()
+  async update(
+    id: User['id'],
+    updateUserDto: UpdateUserDto,
+  ): Promise<User | null> {
+    const user = await this.usersRepository.findById(id);
+
+    if (updateUserDto.email) {
+      await this.validateEmail(updateUserDto.email, id);
+    }
+
+    const newEmail = updateUserDto.newEmail ? updateUserDto.newEmail : '';
+    if (newEmail) {
+      await this.validateEmail(newEmail, id);
+    }
+
+    let password: string | undefined = undefined;
+    if (
+      updateUserDto.password &&
+      user &&
+      user.password !== updateUserDto.password
+    ) {
+      const salt = await bcrypt.genSalt();
+      password = await bcrypt.hash(updateUserDto.password, salt);
+    }
+
+    const avatar = await this.resolveAvatar(user?.avatar, updateUserDto.avatar);
+
+    return this.usersRepository.update(id, {
+      // Do not remove comment below.
+      // <updating-property-payload />
+      fullName: updateUserDto.fullName,
+      email: updateUserDto.email,
+      newEmail,
+      password,
+      bio: updateUserDto.bio,
+      postCount: updateUserDto.postCount,
+      commentCount: updateUserDto.commentCount,
+      followerCount: updateUserDto.followerCount,
+      followingCount: updateUserDto.followingCount,
+      avatar,
+      role: updateUserDto.role ?? undefined,
+      status: updateUserDto.status ?? undefined,
+      provider: updateUserDto.provider,
+    });
+  }
+
+  async validateEmail(email: string, excludeId: User['id']): Promise<void> {
+    const userObject = await this.usersRepository.findByEmail(email);
+    if (userObject && userObject.id !== excludeId) {
+      throw new UnprocessableEntityException({
+        errors: { email: 'Email already exists' },
+      });
+    }
+  }
+
+  private async resolveAvatar(
+    currentAvatar: FileType | null | undefined,
+    newAvatarDto: { id: string } | null | undefined,
+  ): Promise<FileType | null | undefined> {
+    if (newAvatarDto?.id) {
+      if (currentAvatar) {
+        await this.filesService.update(currentAvatar.id, {
+          status: FileStatusEnum.ORPHAN,
+        });
+      }
+      const fileObject = await this.filesService.update(
+        newAvatarDto.id,
+        { status: FileStatusEnum.USED },
+        { status: { $in: [FileStatusEnum.UPLOADED, FileStatusEnum.ORPHAN] } },
+      );
+      if (!fileObject) {
+        throw new UnprocessableEntityException({
+          errors: { avatar: 'Image not exists' },
+        });
+      }
+      return fileObject;
+    } else if (newAvatarDto === null) {
+      if (currentAvatar) {
+        await this.filesService.update(currentAvatar.id, {
+          status: FileStatusEnum.ORPHAN,
+        });
+      }
+      return null;
+    }
+    return undefined;
+  }
+
+  findByEmail(email: User['email']): Promise<NullableType<User>> {
+    return this.usersRepository.findByEmail(email);
+  }
+
+  findById(id: User['id']): Promise<NullableType<User>> {
+    return this.usersRepository.findById(id);
   }
 }
