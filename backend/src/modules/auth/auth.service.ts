@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { SessionService } from '../session/session.service';
@@ -107,7 +108,11 @@ export class AuthService {
     }
 
     if (user.provider !== AuthProvidersEnum.EMAIL) {
-      throw new UnauthorizedException(`Please login with ${user.provider}`);
+      throw new UnprocessableEntityException({
+        errors: {
+          email: `Please login with ${user.provider}`,
+        },
+      });
     }
 
     const isPasswordValid = await this.userService.comparePassword(
@@ -116,7 +121,11 @@ export class AuthService {
     );
 
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Incorrect password');
+      throw new UnprocessableEntityException({
+        errors: {
+          password: 'Incorrect password',
+        },
+      });
     }
     const session = await this.createUserSession(user);
 
