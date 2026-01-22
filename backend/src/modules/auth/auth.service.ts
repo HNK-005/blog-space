@@ -4,19 +4,29 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { UserService } from '../user/user.service';
+import { SessionService } from '../session/session.service';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '../mailer/mailer.service';
-import { AuthRegisterDto } from './dto/auth-register-login.dto';
+import { AuthRegisterDto } from './dto/auth-register.dto';
 import { RoleEnum, StatusEnum } from '../user/user.enum';
 import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from '@/common/configs/config.type';
 import { User } from '../user/domain/user';
+import { AuthLoginResponseDto } from './dto/auth-login-response';
+import { AuthLoginDto } from './dto/auth-login.dto';
+import { AuthProvidersEnum } from './auth.enum';
+import { Session } from '../session/domain/session';
+import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 
+import ms from 'ms';
+import crypto from 'crypto';
+import { Response } from 'express';
 @Injectable()
 export class AuthService {
   constructor(
     private readonly configService: ConfigService<AllConfigType>,
     private readonly userService: UserService,
+    private readonly sessionService: SessionService,
     private readonly jwtService: JwtService,
     private readonly mailerService: MailerService,
   ) {}
@@ -86,5 +96,147 @@ export class AuthService {
         hash,
       },
     });
+  }
+
+  async login(res: Response, dto: AuthLoginDto): Promise<AuthLoginResponseDto> {
+    const { email, password } = dto;
+
+    const user = await this.userService.findByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (user.provider !== AuthProvidersEnum.EMAIL) {
+      throw new UnauthorizedException(`Please login with ${user.provider}`);
+    }
+
+    const isPasswordValid = await this.userService.comparePassword(
+      password,
+      user,
+    );
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Incorrect password');
+    }
+    const session = await this.createSession(user);
+
+    await this.setTokensCookies(res, user, session);
+
+    return {
+      fullName: user.fullName,
+      username: user.username,
+      avatar: user.avatar,
+    };
+  }
+
+  private async createSession(user: User): Promise<Session> {
+    const hash = crypto
+      .createHash('sha256')
+      .update(randomStringGenerator())
+      .digest('hex');
+
+    const session = await this.sessionService.create({
+      user,
+      hash,
+    });
+
+    return session;
+  }
+
+  private async setTokensCookies(
+    res: Response,
+    user: User,
+    session: Session,
+  ): Promise<void> {
+    const {
+      token: jwtToken,
+      refreshToken,
+      tokenExpires,
+      refreshTokenExpires,
+    } = await this.getTokensData({
+      id: user.id,
+      role: user.role,
+      sessionId: session.id,
+      hash: session.hash,
+    });
+
+    const env =
+      this.configService.getOrThrow('app.nodeEnv', {
+        infer: true,
+      }) === 'production';
+
+    const secure = env ? true : false;
+    const sameSite = env ? 'none' : 'lax';
+
+    res.cookie('accessToken', jwtToken, {
+      httpOnly: true,
+      secure: secure,
+      sameSite: sameSite,
+      expires: new Date(tokenExpires),
+    });
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: secure,
+      sameSite: sameSite,
+      expires: new Date(refreshTokenExpires),
+    });
+  }
+
+  private async getTokensData(data: {
+    id: User['id'];
+    role: User['role'];
+    sessionId: Session['id'];
+    hash: Session['hash'];
+  }) {
+    const tokenExpiresIn = this.configService.getOrThrow('auth.expires', {
+      infer: true,
+    });
+
+    const refreshTokenExpiresIn = this.configService.getOrThrow(
+      'auth.refreshExpires',
+      {
+        infer: true,
+      },
+    );
+
+    const tokenExpires = Date.now() + ms(tokenExpiresIn);
+    const refreshTokenExpires = Date.now() + ms(refreshTokenExpiresIn);
+
+    const [token, refreshToken] = await Promise.all([
+      await this.jwtService.signAsync(
+        {
+          id: data.id,
+          role: data.role,
+          sessionId: data.sessionId,
+        },
+        {
+          secret: this.configService.getOrThrow('auth.secret', { infer: true }),
+          expiresIn: tokenExpiresIn,
+        },
+      ),
+      await this.jwtService.signAsync(
+        {
+          sessionId: data.sessionId,
+          hash: data.hash,
+        },
+        {
+          secret: this.configService.getOrThrow('auth.refreshSecret', {
+            infer: true,
+          }),
+          expiresIn: this.configService.getOrThrow('auth.refreshExpires', {
+            infer: true,
+          }),
+        },
+      ),
+    ]);
+
+    return {
+      token,
+      refreshToken,
+      tokenExpires,
+      refreshTokenExpires,
+    };
   }
 }

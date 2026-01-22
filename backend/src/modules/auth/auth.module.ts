@@ -4,12 +4,14 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UserModule } from '../user/user.module';
 import { MailerModule } from '../mailer/mailer.module';
+import { SessionModule } from '../session/session.module';
 
 @Module({
   imports: [
     // import modules, etc.
     UserModule,
     MailerModule,
+    SessionModule,
     JwtModule.register({}),
   ],
   controllers: [AuthController],

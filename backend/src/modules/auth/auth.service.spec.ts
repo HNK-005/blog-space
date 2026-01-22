@@ -8,7 +8,7 @@ import { UserService } from '../user/user.service';
 import { MailerService } from '../mailer/mailer.service';
 import { mockUserService } from '../user/__mock__/user.service.mock';
 import { mockMailerService } from '../mailer/__mock__/mock.service.mock';
-import { AuthRegisterDto } from './dto/auth-register-login.dto';
+import { AuthRegisterDto } from './dto/auth-register.dto';
 import { RoleEnum, StatusEnum } from '../user/user.enum';
 import { User } from '../user/domain/user';
 
@@ -462,5 +462,9 @@ describe('AuthService', () => {
         );
       });
     });
+  });
+
+  describe('login', () => {
+    // Tests for the login method would go here
   });
 });

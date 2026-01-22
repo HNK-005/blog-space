@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { mockAuthService } from './__mock__/auth.service.mock';
-import { AuthRegisterDto } from './dto/auth-register-login.dto';
+import { AuthRegisterDto } from './dto/auth-register.dto';
 import { AuthConfirmEmailDto } from './dto/auth-confirm-email.dto';
 import { AuthSendActivationEmailDto } from './dto/auth-send-activation-email';
 
@@ -202,5 +202,8 @@ describe('AuthController', () => {
         controller.sendActivationEmail(mockSendActivationEmailDto),
       ).rejects.toThrow(validationError);
     });
+  });
+  describe('login', () => {
+    // Tests for the login method would go here
   });
 });
