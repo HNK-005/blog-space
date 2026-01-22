@@ -10,6 +10,7 @@ import { AuthLoginResponseDto } from '../dto/auth-login-response';
 import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from '@/common/configs/config.type';
 import { Response } from 'express';
+import { APP_ENVIRONMENT } from '@/common/constants/app.enum';
 
 @Injectable()
 export class AuthLoginInterceptor implements NestInterceptor {
@@ -27,8 +28,8 @@ export class AuthLoginInterceptor implements NestInterceptor {
             infer: true,
           });
 
-          const secure = env === 'production' ? true : false;
-          const sameSite = env === 'production' ? 'none' : 'lax';
+          const secure = env === APP_ENVIRONMENT.PRODUCTION ? true : false;
+          const sameSite = env === APP_ENVIRONMENT.PRODUCTION ? 'none' : 'lax';
 
           res.cookie('accessToken', accessToken.token, {
             httpOnly: true,
