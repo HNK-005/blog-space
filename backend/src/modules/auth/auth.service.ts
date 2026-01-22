@@ -119,7 +119,7 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException('Incorrect password');
     }
-    const session = await this.createSession(user);
+    const session = await this.createUserSession(user);
 
     await this.setTokensCookies(res, user, session);
 
@@ -130,7 +130,7 @@ export class AuthService {
     };
   }
 
-  private async createSession(user: User): Promise<Session> {
+  private async createUserSession(user: User): Promise<Session> {
     const hash = crypto
       .createHash('sha256')
       .update(randomStringGenerator())
