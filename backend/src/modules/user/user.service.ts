@@ -176,6 +176,13 @@ export class UserService {
     return undefined;
   }
 
+  comparePassword(password: string, user: User): Promise<boolean> {
+    if (!user.password) {
+      throw new UnprocessableEntityException('Password not set for user');
+    }
+    return bcrypt.compare(password, user.password);
+  }
+
   findByEmail(email: User['email']): Promise<NullableType<User>> {
     return this.usersRepository.findByEmail(email);
   }
