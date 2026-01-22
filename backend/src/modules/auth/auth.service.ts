@@ -121,7 +121,7 @@ export class AuthService {
     }
     const session = await this.createUserSession(user);
 
-    await this.setTokensCookies(res, user, session);
+    await this.setUserTokensUseCookies(res, user, session);
 
     return {
       fullName: user.fullName,
@@ -144,7 +144,7 @@ export class AuthService {
     return session;
   }
 
-  private async setTokensCookies(
+  private async setUserTokensUseCookies(
     res: Response,
     user: User,
     session: Session,
