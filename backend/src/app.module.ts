@@ -23,6 +23,7 @@ import { FollowModule } from './modules/follow/follow.module';
 import { MailerModule } from './modules/mailer/mailer.module';
 import authConfig from './modules/auth/config/auth.config';
 import { AuthModule } from './modules/auth/auth.module';
+import { SessionModule } from './modules/session/session.module';
 
 /* Load PlaygroundModule only in development environment */
 const devModules =
@@ -70,6 +71,7 @@ const devModules =
     FollowModule,
     MailerModule,
     AuthModule,
+    SessionModule,
   ],
 })
 export class AppModule {}
