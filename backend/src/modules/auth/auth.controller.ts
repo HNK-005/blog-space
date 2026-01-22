@@ -4,9 +4,8 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Res,
+  UseInterceptors,
 } from '@nestjs/common';
-import type { Response } from 'express';
 import { AuthService } from './auth.service';
 import { AuthRegisterDto } from './dto/auth-register.dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -14,6 +13,7 @@ import { AuthConfirmEmailDto } from './dto/auth-confirm-email.dto';
 import { AuthSendActivationEmailDto } from './dto/auth-send-activation-email';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { AuthLoginResponseDto } from './dto/auth-login-response';
+import { AuthLoginInterceptor } from './interceptor/auth-login.interceptor';
 @ApiTags('Auth')
 @Controller({
   path: 'auth',
@@ -45,11 +45,9 @@ export class AuthController {
   }
 
   @Post('email/login')
+  @UseInterceptors(AuthLoginInterceptor)
   @HttpCode(HttpStatus.OK)
-  async login(
-    @Res({ passthrough: true }) res: Response,
-    @Body() loginDto: AuthLoginDto,
-  ): Promise<AuthLoginResponseDto> {
-    return this.service.login(res, loginDto);
+  async login(@Body() loginDto: AuthLoginDto): Promise<AuthLoginResponseDto> {
+    return this.service.login(loginDto);
   }
 }

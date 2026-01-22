@@ -20,7 +20,6 @@ import { randomStringGenerator } from '@nestjs/common/utils/random-string-genera
 
 import ms from 'ms';
 import crypto from 'crypto';
-import { Response } from 'express';
 @Injectable()
 export class AuthService {
   constructor(
@@ -98,7 +97,7 @@ export class AuthService {
     });
   }
 
-  async login(res: Response, dto: AuthLoginDto): Promise<AuthLoginResponseDto> {
+  async login(dto: AuthLoginDto): Promise<AuthLoginResponseDto> {
     const { email, password } = dto;
 
     const user = await this.userService.findByEmail(email);
@@ -121,9 +120,29 @@ export class AuthService {
     }
     const session = await this.createUserSession(user);
 
-    await this.setUserTokensUseCookies(res, user, session);
+    const {
+      token: jwtToken,
+      refreshToken,
+      tokenExpires,
+      refreshTokenExpires,
+    } = await this.getTokensData({
+      id: user.id,
+      role: user.role,
+      sessionId: session.id,
+      hash: session.hash,
+    });
 
     return {
+      metaData: {
+        accessToken: {
+          token: jwtToken,
+          expires: new Date(tokenExpires),
+        },
+        refreshToken: {
+          token: refreshToken,
+          expires: new Date(refreshTokenExpires),
+        },
+      },
       fullName: user.fullName,
       username: user.username,
       avatar: user.avatar,
@@ -142,46 +161,6 @@ export class AuthService {
     });
 
     return session;
-  }
-
-  private async setUserTokensUseCookies(
-    res: Response,
-    user: User,
-    session: Session,
-  ): Promise<void> {
-    const {
-      token: jwtToken,
-      refreshToken,
-      tokenExpires,
-      refreshTokenExpires,
-    } = await this.getTokensData({
-      id: user.id,
-      role: user.role,
-      sessionId: session.id,
-      hash: session.hash,
-    });
-
-    const env =
-      this.configService.getOrThrow('app.nodeEnv', {
-        infer: true,
-      }) === 'production';
-
-    const secure = env ? true : false;
-    const sameSite = env ? 'none' : 'lax';
-
-    res.cookie('accessToken', jwtToken, {
-      httpOnly: true,
-      secure: secure,
-      sameSite: sameSite,
-      expires: new Date(tokenExpires),
-    });
-
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: secure,
-      sameSite: sameSite,
-      expires: new Date(refreshTokenExpires),
-    });
   }
 
   private async getTokensData(data: {
