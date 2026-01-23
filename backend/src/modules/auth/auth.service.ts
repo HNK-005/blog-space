@@ -193,7 +193,7 @@ export class AuthService {
     const refreshTokenExpires = Date.now() + ms(refreshTokenExpiresIn);
 
     const [token, refreshToken] = await Promise.all([
-      await this.jwtService.signAsync(
+      this.jwtService.signAsync(
         {
           id: data.id,
           role: data.role,
@@ -204,7 +204,7 @@ export class AuthService {
           expiresIn: tokenExpiresIn,
         },
       ),
-      await this.jwtService.signAsync(
+      this.jwtService.signAsync(
         {
           sessionId: data.sessionId,
           hash: data.hash,
