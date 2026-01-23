@@ -1,4 +1,4 @@
-export enum SerializationGroup {
+export enum SERIALIZATION_GROUP {
   ME = 'me',
   ADMIN = 'admin',
 }

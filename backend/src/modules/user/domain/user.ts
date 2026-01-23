@@ -3,7 +3,7 @@ import { AuthProvidersEnum } from '@/modules/auth/auth.enum';
 import { FileType } from '@/modules/file/domain/file';
 import { RoleEnum, StatusEnum } from '../user.enum';
 import { Exclude, Expose } from 'class-transformer';
-import { SerializationGroup } from '@/common/constants/group.enum';
+import { SERIALIZATION_GROUP } from '@/common/constants/group.enum';
 
 export class User {
   @ApiProperty({
@@ -21,7 +21,7 @@ export class User {
     type: String,
     example: 'john.doe@example.com',
   })
-  @Expose({ groups: [SerializationGroup.ME, SerializationGroup.ADMIN] })
+  @Expose({ groups: [SERIALIZATION_GROUP.ME, SERIALIZATION_GROUP.ADMIN] })
   email: string;
 
   @ApiProperty({
