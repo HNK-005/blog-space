@@ -11,7 +11,7 @@ import {
 import { PlaygroundService } from './playground.service';
 import { ApiOperation } from '@nestjs/swagger';
 import { GetDto } from './dto/get.dto';
-import { ApiOkCustomResponse } from '@/common/dto/api-response.decorator';
+import { ApiOkCustomResponse } from '@/common/decorators/api-response.decorator';
 import { PostDto } from './dto/post.dto';
 import { MailerService } from '../mailer/mailer.service';
 

@@ -17,7 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { FileLocalService } from './file.service';
 import { FileResponseDto } from './dto/file-response.dto';
-import { ApiCreatedCustomResponse } from '@/common/dto/api-response.decorator';
+import { ApiCreatedCustomResponse } from '@/common/decorators/api-response.decorator';
 
 @ApiTags('Files')
 @Controller({

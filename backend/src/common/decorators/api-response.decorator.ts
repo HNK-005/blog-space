@@ -5,7 +5,7 @@ import {
   ApiExtraModels,
   ApiCreatedResponse,
 } from '@nestjs/swagger';
-import { ResponseDto } from './response.dto';
+import { ResponseDto } from '../dto/response.dto';
 
 const createSchema = (model: Type<any>, isArray: boolean) => ({
   allOf: [
