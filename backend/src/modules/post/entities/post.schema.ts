@@ -33,10 +33,11 @@ export class PostSchemaClass extends EntityDocumentHelper {
     type: [Types.ObjectId],
     ref: TagSchemaClass.name,
     maximum: 10,
+    index: true,
   })
   tags?: TagSchemaClass[];
 
-  @Prop({ type: String, unique: true })
+  @Prop({ type: String, unique: true, index: true, required: true })
   slug: string;
 
   @Prop({ type: Boolean, default: false })
@@ -46,12 +47,14 @@ export class PostSchemaClass extends EntityDocumentHelper {
     type: Types.ObjectId,
     ref: UserSchemaClass.name,
     required: true,
+    index: true,
   })
   author: UserSchemaClass;
 
   @Prop({
     type: Types.ObjectId,
     ref: UserSchemaClass.name,
+    index: true,
   })
   likes?: UserSchemaClass[];
 
@@ -76,8 +79,3 @@ export const PostSchema = SchemaFactory.createForClass(PostSchemaClass);
 export type PostDocument = HydratedDocument<PostSchemaClass>;
 
 PostSchema.plugin(paginate);
-
-PostSchema.index({ author: 1 });
-PostSchema.index({ slug: 1 });
-PostSchema.index({ tags: 1 });
-PostSchema.index({ likes: 1 });

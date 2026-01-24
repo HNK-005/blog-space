@@ -21,13 +21,14 @@ export class UserSchemaClass extends EntityDocumentHelper {
     type: String,
     required: true,
     unique: true,
+    index: true,
   })
   email: string;
 
   @Prop({ type: String })
   newEmail?: string;
 
-  @Prop({ type: String, required: true, unique: true })
+  @Prop({ type: String, required: true, unique: true, index: true })
   username: string;
 
   @Prop({ type: String })
@@ -89,6 +90,3 @@ export class UserSchemaClass extends EntityDocumentHelper {
 
 export const UserSchema = SchemaFactory.createForClass(UserSchemaClass);
 export type UserSchemaDocument = HydratedDocument<UserSchemaClass>;
-
-UserSchema.index({ email: 1 });
-UserSchema.index({ username: 1 });
