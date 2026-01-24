@@ -25,45 +25,54 @@ import authConfig from './modules/auth/config/auth.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { SessionModule } from './modules/session/session.module';
 
-/* Load PlaygroundModule only in development environment */
-const devModules =
-  process.env.NODE_ENV === APP_ENVIRONMENT.DEVELOPMENT
+const getLoggerConfig = () => {
+  const isProduction = process.env.NODE_ENV === APP_ENVIRONMENT.PRODUCTION;
+
+  return {
+    pinoHttp: {
+      level: isProduction ? 'info' : 'debug',
+      transport: isProduction
+        ? undefined
+        : {
+            target: 'pino-pretty',
+            options: {
+              colorize: true,
+              singleLine: false,
+              translateTime: 'SYS:standard',
+              ignore: 'pid,hostname',
+            },
+          },
+    },
+  };
+};
+
+const getMongooseConfigClass = () => {
+  return process.env.NODE_ENV === APP_ENVIRONMENT.TEST
+    ? MongooseConfigTestService
+    : MongooseConfigService;
+};
+
+const getDevModules = () => {
+  return process.env.NODE_ENV === APP_ENVIRONMENT.DEVELOPMENT
     ? [PlaygroundModule]
     : [];
+};
 
 @Module({
   imports: [
-    LoggerModule.forRoot({
-      pinoHttp: {
-        level:
-          process.env.NODE_ENV !== APP_ENVIRONMENT.PRODUCTION
-            ? 'debug'
-            : 'info',
-        transport:
-          process.env.NODE_ENV !== APP_ENVIRONMENT.PRODUCTION
-            ? {
-                target: 'pino-pretty',
-                options: {
-                  colorize: true,
-                  singleLine: false,
-                  translateTime: 'SYS:standard',
-                  ignore: 'pid,hostname',
-                },
-              }
-            : undefined,
-      },
-    }),
+    LoggerModule.forRoot(getLoggerConfig()),
+
     MongooseModule.forRootAsync({
-      useClass:
-        process.env.NODE_ENV === APP_ENVIRONMENT.TEST
-          ? MongooseConfigTestService
-          : MongooseConfigService,
+      useClass: getMongooseConfigClass(),
     }),
+
     ConfigModule.forRoot({
       load: [appConfig, databaseConfig, fileConfig, mailConfig, authConfig],
       isGlobal: true,
     }),
-    ...devModules,
+
+    ...getDevModules(),
+
     FileModule,
     UserModule,
     PostModule,
