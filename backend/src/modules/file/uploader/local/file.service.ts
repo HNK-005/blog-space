@@ -20,10 +20,10 @@ export class FileLocalService {
       });
     }
 
-    const backendDomain = this.configService.get('app.backendDomain', {
+    const backendDomain = this.configService.getOrThrow('app.backendDomain', {
       infer: true,
     });
-    const apiPrefix = this.configService.get('app.apiPrefix', {
+    const apiPrefix = this.configService.getOrThrow('app.apiPrefix', {
       infer: true,
     });
 
