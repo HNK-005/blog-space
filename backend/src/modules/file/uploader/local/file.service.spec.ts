@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config/dist/config.service';
 import { FileService } from '../../file.service';
 import { FileStatusEnum } from '../../file.enum';
 import { UnprocessableEntityException } from '@nestjs/common/exceptions/unprocessable-entity.exception';
+import { FileType } from '../../domain/file';
 
 describe('FileLocalService', () => {
   let service: FileLocalService;
@@ -62,13 +63,15 @@ describe('FileLocalService', () => {
       }
     });
 
-    mockFileService.create.mockResolvedValue({
+    const mockFileResolveValue: FileType = {
       id: expect.any(String),
       path: 'http://localhost:3000/api/v1/uploads/test-1234.png',
       status: FileStatusEnum.UPLOADED,
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
-    });
+    };
+
+    mockFileService.create.mockResolvedValue(mockFileResolveValue);
 
     const result = await service.create(mockFile);
 
@@ -78,10 +81,7 @@ describe('FileLocalService', () => {
     });
 
     expect(result).toHaveProperty('file');
-    expect(result.file).toHaveProperty(
-      'path',
-      'http://localhost:3000/api/v1/uploads/test-1234.png',
-    );
+    expect(result.file).toEqual(mockFileResolveValue);
   });
 
   it('should throw UnprocessableEntityException when file is invalid', async () => {
