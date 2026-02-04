@@ -20,14 +20,19 @@ export class FileLocalService {
       });
     }
 
+    const backendDomain = this.configService.get('app.backendDomain', {
+      infer: true,
+    });
+    const apiPrefix = this.configService.get('app.apiPrefix', {
+      infer: true,
+    });
+
+    const filePath = await this.fileService.create({
+      path: `${backendDomain}/${apiPrefix}/v1/${file.path}`,
+    } as FileType);
+
     return {
-      file: await this.fileService.create({
-        path: `${this.configService.get('app.backendDomain', {
-          infer: true,
-        })}/${this.configService.get('app.apiPrefix', {
-          infer: true,
-        })}/v1/${file.path}`,
-      } as FileType),
+      file: filePath,
     };
   }
 }
