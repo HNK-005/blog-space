@@ -51,14 +51,14 @@ describe('FileLocalService', () => {
       filename: 'test-1234.png',
     };
 
-    mockConfigService.get.mockImplementation((key: string) => {
+    mockConfigService.getOrThrow.mockImplementation((key: string) => {
       switch (key) {
         case 'app.backendDomain':
           return 'http://localhost:3000';
         case 'app.apiPrefix':
           return 'api';
         default:
-          return null;
+          throw new Error(expect.any(String));
       }
     });
 
@@ -72,7 +72,7 @@ describe('FileLocalService', () => {
 
     const result = await service.create(mockFile);
 
-    expect(mockConfigService.get).toHaveBeenCalledTimes(2);
+    expect(mockConfigService.getOrThrow).toHaveBeenCalledTimes(2);
     expect(mockFileService.create).toHaveBeenCalledWith({
       path: 'http://localhost:3000/api/v1/uploads/test-1234.png',
     });
@@ -88,5 +88,19 @@ describe('FileLocalService', () => {
     await expect(service.create(null as any)).rejects.toThrow(
       UnprocessableEntityException,
     );
+  });
+
+  it('should throw exception when config values are missing', async () => {
+    const mockFile: Express.Multer.File = expect.any(Object);
+
+    mockConfigService.getOrThrow.mockImplementation((key: string) => {
+      switch (key) {
+        default:
+          throw new Error(expect.any(String));
+      }
+    });
+
+    expect(mockConfigService.getOrThrow).toHaveBeenCalledTimes(0);
+    await expect(service.create(mockFile)).rejects.toThrow(Error);
   });
 });
